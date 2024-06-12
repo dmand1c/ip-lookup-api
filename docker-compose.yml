@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: ip-lookup-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - LOG_DIR=/usr/src/app/logs
+    volumes:
+      - .:/usr/src/app
+      - ./logs:/usr/src/app/logs   # Map local 'logs' directory to '/usr/src/app/logs' in the container
+      - ./node_modules:/usr/src/app/node_modules
+
+    env_file:
+      - .env
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6380:6379"
